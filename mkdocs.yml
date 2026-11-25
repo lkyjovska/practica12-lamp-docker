@@ -1,0 +1,43 @@
+site_name: Práctica 12 · LAMP en Docker
+site_description: Imagen LAMP (Debian + Apache + MariaDB + PHP) con Docker, publicada con HTTPS
+site_author: Lenka Kyjovská
+site_url: https://lkyjovska.github.io/practica12-lamp-docker/
+repo_url: https://github.com/lkyjovska/practica12-lamp-docker
+repo_name: lkyjovska/practica12-lamp-docker
+
+theme:
+  name: material
+  language: es
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+  palette:
+    - scheme: default
+      primary: blue
+      toggle:
+        icon: material/weather-night
+        name: Modo oscuro
+    - scheme: slate
+      primary: blue
+      toggle:
+        icon: material/weather-sunny
+        name: Modo claro
+
+nav:
+  - Inicio: index.md
+  - Tutorial LAMP paso a paso: tutorial-lamp.md
+  - La imagen lenka-web: imagen-lenka-web.md
+  - Docker cheatsheet: cheatsheet.md
+
+markdown_extensions:
+  - admonition
+  - tables
+  - attr_list
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format

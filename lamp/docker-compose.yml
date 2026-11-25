@@ -1,0 +1,17 @@
+services:
+  lamp:
+    image: lkyj004/lenka-lamp:1.0
+    container_name: lenka-lamp
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - lamp_db:/var/lib/mysql
+    networks:
+      - proxy
+
+volumes:
+  lamp_db:
+
+networks:
+  proxy:
+    external: true
