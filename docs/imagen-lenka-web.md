@@ -9,7 +9,7 @@ Antes del LAMP hicimos una imagen más sencilla: **una página web con nginx**. 
 ```mermaid
 flowchart LR
  A["index.html<br>la pagina"] --> B["Dockerfile<br>la receta"]
- B -->|docker build| C["Imagen<br>lenka-web:1.1"]
+ B -->|docker build| C["Imagen<br>lenka-web:1.2"]
  C -->|docker push| D["Docker Hub"]
  C -->|docker compose up| E["Contenedor<br>lenka-web"]
  E --> F["Nginx Proxy Manager<br>HTTPS"]
@@ -39,6 +39,12 @@ ENV TZ=Europe/Madrid
 WORKDIR /usr/share/nginx/html
 COPY index.html .
 RUN echo "imagen construida el $(date)" > build-info.txt
+
+# NUEVO en la 1.2: el QR apunta al repositorio de GitHub
+ARG GITHUB_URL=https://github.com/lkyjovska/web-lenka
+RUN apk add --no-cache libqrencode-tools \
+ && qrencode -s 8 -m 2 -o qr.png "${GITHUB_URL}"
+
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s CMD wget -q -O /dev/null http://localhost/ || exit 1
 ```
@@ -51,10 +57,11 @@ HEALTHCHECK --interval=30s --timeout=5s CMD wget -q -O /dev/null http://localhos
 | `WORKDIR` | La carpeta que nginx publica como web |
 | `COPY index.html .` | Copia **nuestra página** a la imagen |
 | `RUN echo ...` | Ejecuta un comando al construir: escribe la fecha de construcción |
+| `ARG` + `RUN apk add ... qrencode` | **(1.2)** Instala la herramienta de QR y crea `qr.png` apuntando a GitHub |
 | `EXPOSE 80` | Documenta el puerto (no abre nada) |
 | `HEALTHCHECK` | Cada 30 s comprueba que la web responde |
 
-`FROM`, `WORKDIR`, `COPY` y `RUN` crean **capas** (por eso `docker build` muestra «4/4» pasos). Las demás solo añaden información.
+`FROM`, `WORKDIR`, `COPY` y `RUN` crean **capas** (por eso `docker build` muestra «5/5» pasos en la 1.2). Las demás solo añaden información.
 
 ## 3. Construir y subir la imagen
 
@@ -71,7 +78,7 @@ docker push lkyj004/lenka-web:1.0
 ```yaml
 services:
   web:
-    image: lkyj004/lenka-web:1.1
+    image: lkyj004/lenka-web:1.2
     container_name: lenka-web
     restart: unless-stopped
     networks:
@@ -104,6 +111,32 @@ docker inspect -f '{{.Name}} usa {{.Config.Image}}' lenka-web
 ```
 
 Se recarga la página con `Ctrl+F5` para no ver la copia en caché.
+
+## 6. Versión 1.2: un QR que lleva a GitHub
+
+La 1.2 añade al final de la web una tarjeta **«Cómo se hizo esta imagen»** con un **QR**. Al escanearlo con el móvil se abre el repositorio <https://github.com/lkyjovska/web-lenka>, donde está todo explicado.
+
+```mermaid
+flowchart TB
+ A["Dockerfile"] --> B["docker build<br>paso 5/5"]
+ B --> C["qrencode fabrica qr.png"]
+ C --> D[("Imagen lenka-web:1.2<br>con qr.png dentro")]
+ D --> E["Contenedor: nginx sirve la web"]
+ E --> F(["El móvil escanea el QR"]) --> G(["GitHub: lkyjovska/web-lenka"])
+```
+
+!!! tip "La web solo muestra el QR"
+    El QR **lo crea `docker build`** y nginx lo sirve como cualquier otro archivo. La página `index.html` solo lo muestra con `<img src="qr.png">`.
+
+```bash
+docker build -t lkyj004/lenka-web:1.2 .
+docker push lkyj004/lenka-web:1.2
+sed -i 's/lenka-web:1.1/lenka-web:1.2/' docker-compose.yml
+docker compose up -d
+docker logout          # al terminar: Sauron olvida la sesión de Docker Hub
+```
+
+📂 Código y tutorial completo de esta imagen: **[github.com/lkyjovska/web-lenka](https://github.com/lkyjovska/web-lenka)**.
 
 ## `EXPOSE` frente a `-p`
 

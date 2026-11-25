@@ -66,6 +66,7 @@ Lo importante: **MariaDB funciona en segundo plano** (por detrás) mientras Apac
 
 ## 🔎 Qué encontrarás aquí
 
+- 🧭 [Guía para principiantes](guia-principiantes.md): **empieza aquí**. Qué hay que hacer, paso a paso y con casillas.
 - 🚀 [Tutorial LAMP paso a paso](tutorial-lamp.md): cómo se ha creado la imagen, con todos los comandos.
-- 📦 [La imagen lenka-web](imagen-lenka-web.md): la primera imagen que hicimos con un Dockerfile.
+- 📦 [La imagen lenka-web](imagen-lenka-web.md): la primera imagen que hicimos con un Dockerfile (ahora con QR). Su código está en [web-lenka](https://github.com/lkyjovska/web-lenka).
 - 🐳 [Docker cheatsheet](cheatsheet.md): la chuleta de comandos.

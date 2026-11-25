@@ -27,6 +27,7 @@ theme:
 
 nav:
   - Inicio: index.md
+  - Guía para principiantes: guia-principiantes.md
   - Tutorial LAMP paso a paso: tutorial-lamp.md
   - La imagen lenka-web: imagen-lenka-web.md
   - Docker cheatsheet: cheatsheet.md
@@ -36,6 +37,8 @@ markdown_extensions:
   - tables
   - attr_list
   - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
